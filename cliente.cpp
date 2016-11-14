@@ -1,4 +1,4 @@
-//============================================================================
+/============================================================================
 // Name : TestSensores.cpp
 // Author : CAMM NEVS
 // Version :
@@ -43,7 +43,7 @@
 #define MQTT_PORT 1883
 #define MQTT_USERNAME ""
 #define MQTT_PASSWORD ""
-#define MQTT_TOPIC "hello"
+#define MQTT_TOPIC "/solution/4ce2b51d-e554-4735-917f-19ce54518934"
 
 static int destroy_flag = 0;
 
@@ -128,10 +128,10 @@ void error(const char *msg) {
 }
 
 int serialize(char * buffer, datosTemp * d_temp, datosLuz * d_luz,
-		comandos * d_comandos, indices index) {
+		comandos * d_comandos, indices index,datosHume* d_hume) {
 
 	int i;
-	sprintf(buffer, "{\"indices\":[%d,%d,%d,%d],\"temp\":[", index.indTemp,
+	sprintf(buffer, "{\"indices\":[%d,%d,%d,%d],\"0e33b708-b583-4a67-8021-c040374d5051\":[", index.indTemp,
 			index.indLuz, index.indCom, index.indhum);
 
 	for (i = 0; i < index.indTemp - 1; i++) {
@@ -139,7 +139,7 @@ int serialize(char * buffer, datosTemp * d_temp, datosLuz * d_luz,
 				d_temp[i].datoTemperatura, (long int) d_temp[i].tiempo);
 	}
 
-	sprintf(buffer, "%s{\"v\":%4.2f,\"ts\":%li}],\"lux\":[", buffer,
+	sprintf(buffer, "%s{\"v\":%4.2f,\"ts\":%li}],\"ee7d96a9-7d52-42fe-9089-796a4811fec2\":[", buffer,
 			d_temp[i].datoTemperatura, (long int) d_temp[i].tiempo);
 
 	for (i = 0; i < index.indLuz - 1; i++) {
@@ -159,17 +159,17 @@ int serialize(char * buffer, datosTemp * d_temp, datosLuz * d_luz,
 	//	d_comandos[i].freqTemp, d_comandos[i].freqLuz,
 	//	d_comandos[i].freqconsol, (long int) d_comandos[i].tiempo);
 
-	sprintf(buffer, "%s{\"t\":%d,\"l\":%d,\"c\":%d,\"ts\":%li}],\"hum\":[",
+	sprintf(buffer, "%s{\"t\":%d,\"l\":%d,\"c\":%d,\"ts\":%li}],\"e7737df9-081f-482d-931d-ca2b1f49d19f\":[",
 			buffer, d_comandos[i].freqTemp, d_comandos[i].freqLuz,
 			d_comandos[i].freqconsol, (long int) d_comandos[i].tiempo);
 
 	for (i = 0; i < index.indhum - 1; i++) {
 		sprintf(buffer, "%s{\"v\":%4.2f,\"ts\":%li},", buffer,
-				d_luz[i].datoLuz, (long int) d_luz[i].tiempo);
+				d_hume[i].datoHumedad, (long int) d_hume[i].tiempo);
 	}
 
 	sprintf(buffer, "%s{\"v\":%4.2f,\"ts\":%li}]}", buffer,
-			d_luz[i].datoLuz, (long int) d_luz[i].tiempo);
+			d_hume[i].datoHumedad, (long int) d_hume[i].tiempo);
 
 
 	printf("%s", buffer);
@@ -417,6 +417,7 @@ void *consolidacion(void *arg) {
 		indicestodos->indLuz = 0;
 		indicestodos->indCom = 0;
 		indicestodos->indTemp = 0;
+		indicestodos->indhum = 0;
 		pthread_mutex_unlock(&mutex_shidindices);
 
 		pthread_mutex_lock(&mutex_shidconso); //Mutex shmidconso lock
@@ -424,7 +425,7 @@ void *consolidacion(void *arg) {
 		pthread_mutex_unlock(&mutex_shidconso); //Mutex shmidconso lock
 
 		serialize(buffer, buffTempActual, buffLuzActual, bufferComActual,
-				indicesActual);
+				indicesActual,bufferHumActual);
 
 		cout << "Transmite el Socket" << endl;
 
@@ -592,7 +593,7 @@ void *luz(void *parametros) {
 		<< "/" << actual->tm_hour << ":" << actual->tm_min << ": " << Rsensor
 				<< std::endl;
 		luzInitDato = Rsensor;
-		datoactual.datoLuz = Rsensor;
+		datoactual.datoLuz = Rsensor+2;
 		datoactual.tiempo = tiempo;
 		pthread_mutex_lock(&mutex_shidluzdatos); //Mutex Buffer Datos Luz Lock
 		pthread_mutex_lock(&mutex_shidindices);
@@ -668,7 +669,7 @@ void *humedad(void *parametros) {
 		//sscanf(shared_memory_temp, "%d", &frecuenciaTemp);
 		//pthread_mutex_unlock(&mutex_shidtemp);
 		uint16_t pin_value = a_pin_hume->read();
-		float humedad = (float) pin_value;
+		float humedad = (float) pin_value/4;
 		time_t tiempo = time(0);
 		struct tm * actual = localtime(&tiempo);
 		std::cout << "Hum: " << actual->tm_mon + 1 << "/" << actual->tm_mday
