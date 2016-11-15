@@ -1,4 +1,4 @@
-/============================================================================
+//============================================================================
 // Name : TestSensores.cpp
 // Author : CAMM NEVS
 // Version :
@@ -565,7 +565,7 @@ void *luz(void *parametros) {
 	int IDmemory = luz->IDmemory;
 	char* shared_memory_luz;
 	datosLuz* buffer_luz;
-	int frecuenciaLuz = 10;
+	int frecuenciaLuz = 8;
 	shared_memory_luz = (char*) shmat(IDmemory, 0, 0);
 //printf("LUZ hnmshared memory attached at address %p\n", shared_memory_luz);
 	int indiceactual = 0;
@@ -610,7 +610,7 @@ void *temperatura(void *parametros) {
 	mraa::Aio* a_pin_tempe = temp->pinTemp;
 	int IDmemory = temp->IDmemory;
 	char* shared_memory_temp;
-	int frecuenciaTemp = 10;
+	int frecuenciaTemp = 8;
 	datosTemp* buffer_Temp;
 	datosTemp datoActual;
 	indices *indicetemp;
@@ -656,7 +656,7 @@ void *humedad(void *parametros) {
 
 	sensorHum *hume = (sensorHum *) parametros;
 	mraa::Aio* a_pin_hume = hume->pinHum;
-	int frecuenciaHume = 10;
+	int frecuenciaHume = 8;
 	datosHumedad datoActual;
 	indices *indicehum;
 	indicehum = (indices*) shmat(shmidindices, 0, 0);
@@ -803,3 +803,4 @@ int main() {
 	printf("Fin\n");
 
 }
+
