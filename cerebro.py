@@ -14,60 +14,67 @@ def eventos(variableID,valorActual):
 
 	if(variableID=="hum"):
 		#Revisar si tiene tipo de operacion Traerla
-		tipoOperacion="menor"
+		tipoOperacionMenor=1
+		tipoOperacionMayor=1
 		#Traer el valor del Setpoint
-		valorSetpoint=20
+		valorSetpointBajo=30
+		valorSetpointAlto=60
 		#Traer el targetDataSource
 		targetDataSource="fad8397a-c934-48fa-8aee-7e6e4c2f5fd2"
 		#Traer el targerVarID
 		targetVarID="5a1bf940-3636-4223-8fc5-8f76bfccaae8"
 		accion=0		
-		if(tipoOperacion=="mayor"):
-			if(valorActual>valorSetpoint):
+		if(tipoOperacionMayor==1):
+			if(valorActual>valorSetpointAlto):
 				accion=0
 				print("APAGAR BOMBA")
 				(rc, mid) = client.publish("/solution/"+targetDataSource+"/"+targetVarID+"/lv", "0", qos=1)
 
-		if(tipoOperacion=="menor"):
-			if(valorActual<valorSetpoint):
+		if(tipoOperacionMenor==1):
+			if(valorActual<valorSetpointBajo):
 				accion=1
 				print("PRENDER BOMBA")
 				(rc, mid) = client.publish("/solution/"+targetDataSource+"/"+targetVarID+"/lv", "1", qos=1)
 	
-			
-	
+				
 
 	if(variableID=="temp"):
-		tipoOperacion="mayor"
-		valorSetpoint=15
+		tipoOperacionMenor=1
+		tipoOperacionMayor=1
+
+		valorSetpointBajo=13
+		valorSetpointAlto=17
+
 		targetDataSource="fad8397a-c934-48fa-8aee-7e6e4c2f5fd2"
 		targetVarID="44794d3e-b9e1-4f48-8fb9-2abf59270811"
 		accion=0
-		if(tipoOperacion=="mayor"):
-			if(valorActual>valorSetpoint):
+		if(tipoOperacionMayor==1):
+			if(valorActual>valorSetpointAlto):
 				accion=1
 				print("Prender Ventilador")	
 				(rc, mid) = client.publish("/solution/"+targetDataSource+"/"+targetVarID+"/lv", "1", qos=1)			
-		if(tipoOperacion=="menor"):
-			if(valorActual<valorSetpoint):
+		if(tipoOperacionMenor==1):
+			if(valorActual<valorSetpointBajo):
 				accion=0
 				print("Apagar Ventilador")
 				(rc, mid) = client.publish("/solution/"+targetDataSource+"/"+targetVarID+"/lv", "0", qos=1)
 	
 
 	if(variableID=="luz"):
-		tipoOperacion="menor"
-		valorSetpoint=100
+		tipoOperacionMenor=1
+		tipoOperacionMayor=1
+		valorSetpointBajo=100
+		valorSetpointAlto=300
 		targetDataSource="fad8397a-c934-48fa-8aee-7e6e4c2f5fd2"
 		targetVarID="a7b77b27-b5dc-4154-84e4-5810c9fc2928"
 		accion=0
-		if(tipoOperacion=="mayor"):
-			if(valorActual>valorSetpoint):
+		if(tipoOperacionMayor==1):
+			if(valorActual>valorSetpointAlto):
 				accion=0
 				print("Apagar LEDS")
 				(rc, mid) = client.publish("/solution/"+targetDataSource+"/"+targetVarID+"/lv", "0", qos=1)				
-		if(tipoOperacion=="menor"):
-			if(valorActual<valorSetpoint):
+		if(tipoOperacionMenor==1):
+			if(valorActual<valorSetpointBajo):
 				accion=1
 				print("Prender LEDS")
 				(rc, mid) = client.publish("/solution/"+targetDataSource+"/"+targetVarID+"/lv", "1", qos=1)
