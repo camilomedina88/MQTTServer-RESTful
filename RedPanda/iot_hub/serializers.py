@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DataSource, Event, Variable, Widget
+from .models import DataSource, Event, Variable, VarValue
 
 
 class DataSourceSerializer(serializers.Serializer):
@@ -37,3 +37,19 @@ class VariableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variable
         fields = ('name', 'unit', 'description', 'icon', 'var_id','data_source')
+
+
+
+class VarValueSerializer(serializers.Serializer):
+    value = serializers.FloatField(required=True)
+    timestamp = serializers.DateTimeField(required=False)
+    var_id = serializers.UUIDField(format='hex_verbose', required=False)
+    #location = serializers.CharField(max_length=100)
+    #variable = models.ForeignKey(Variable, on_delete=models.CASCADE)
+
+    def create(self, validated_data):
+        """
+        Create and return a new `DataSource` instance, given the validated data.
+        """
+        
+        return VarValue.objects.create(**validated_data)

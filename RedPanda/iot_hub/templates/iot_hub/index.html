@@ -1,0 +1,9 @@
+{% if datasource_list %}
+    <ul>
+    {% for datasource in datasource_list %}
+        <li><a href="/datasources/{{ datasource.source_id }}/">{{ datasource.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}

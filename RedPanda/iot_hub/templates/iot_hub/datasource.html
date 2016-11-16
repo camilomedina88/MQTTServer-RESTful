@@ -1,0 +1,6 @@
+<h1>{{ datasource.name }}</h1>
+<ul>
+{% for variables in datasource.variable_set.all %}
+    <li><a href="/datasources/vars/{{ variables.var_id }}/">{{ variables.name }}</a></li>
+{% endfor %}
+</ul>
