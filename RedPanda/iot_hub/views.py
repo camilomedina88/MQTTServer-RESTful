@@ -19,6 +19,14 @@ def web_datasource(request, uuid):
     datasource = DataSource.objects.get(source_id = uuid)
     context = {'datasource': datasource}
     return render(request, 'iot_hub/datasource.html', context)
+def web_variables(request, uuid):
+    variable = Variable.objects.get(var_id = uuid)
+    context = {'variable': variable}
+    return render(request, 'iot_hub/variable.html', context)
+def web_varWidget(request, uuid):
+    variable = Variable.objects.get(var_id = uuid)
+    context = {'variable': variable}
+    return render(request, 'iot_hub/varWidget.html', context)
 
 
 class JSONResponse(HttpResponse):

@@ -1,0 +1,47 @@
+<head>
+	<title>Historial de datos</title>
+	<meta charset="UTF-8">
+
+	<style>
+	/*div {
+		margin-left: 5px;
+		margin-right: 5px
+	}*/
+	table{
+		border-collapse: collapse;
+		width: 90%;
+		overflow-x:auto;
+	}
+	.floating-box {
+    float: left;
+    width: 500px;
+    height: 500px;
+    margin: 10px;
+}
+	table, th, td {
+	    border: 1px solid black;
+	}
+	.column-left{ float: left; width: 33%; }
+	.column-right{ float: right; width: 33%; }
+	.column-center{ display: inline-block; width: 33%; }
+	</style>
+</head>
+
+<div style="clear:left"></div>
+<div>
+	<div class="column-left">
+		<h2>Data History of {{variable.name}}</h2>
+		<table id = "temperature">
+		<tr>
+			<th>Data</th>
+			<th>TimeStamp</th>
+		</tr>
+		{% for varval in variable.varvalue_set.all %}
+		<tr>
+		    <th>{{varval.value}}</th>
+		    <th>{{varval.timestamp}}</th>
+		</tr>
+		{% endfor %}
+		</table>
+	</div>
+</div>
