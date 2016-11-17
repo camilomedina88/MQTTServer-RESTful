@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ["nickiler.ddns.net"]
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',
     'iot_hub.apps.IotHubConfig',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -1,0 +1,33 @@
+<h1>Plot!- {{variable.name}}</h1>
+<div>
+	<div id="tempDiv" class="floating-box"><!-- Plotly chart will be drawn inside this DIV --></div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script >
+	//Plot example
+	var plot_me = [
+	  {
+	    x: [],
+	    y: [],
+	    type: 'scatter'
+	  }
+	];
+
+
+	i = 0
+	{% for varval in variable.varvalue_set.all %}
+		plot_me[0].y[i] = {{varval.value}}
+		plot_me[0].x[i] = "{{varval.timestamp}}"
+	i++
+	{% endfor %}
+
+//	for {{varval}} in {{variable.varvalue_set.all}}
+//	{
+//		plot_me[0].x[{{i}}] = {{varval.value}}
+//		plot_me[0].y[{{i}}] = {{varval.timestamp}}
+//	}
+	
+	console.log(plot_me)
+	Plotly.newPlot('tempDiv', plot_me);
+</script>
