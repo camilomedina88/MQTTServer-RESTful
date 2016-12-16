@@ -65,7 +65,7 @@ class Event(models.Model):
 	)
 
 	name = models.CharField(max_length=50)
-	description = models.TextField(max_length=250)
+	description = models.TextField(max_length=250, null=True, blank=True)
 	data_source = models.ForeignKey(DataSource, db_index=True, null=False, blank=False)
 	data_variable = models.ForeignKey(Variable, null=False, blank=False)
 	operand = models.CharField(
@@ -79,9 +79,10 @@ class Event(models.Model):
 		choices=ACTION_CHOICES,
 		default=SET_VARIABLE,
 	)
-	set_data_source = models.ForeignKey(DataSource, related_name='%(class)s_requests_created')
-	set_data_variable = models.ForeignKey(Variable, related_name='%(class)s_requests_created')
-	value_set = models.FloatField()
+	set_data_source = models.ForeignKey(DataSource, related_name='%(class)s_requests_created', null=True, blank=True)
+	set_data_variable = models.ForeignKey(Variable, related_name='%(class)s_requests_created', null=True, blank=True)
+	value_set = models.FloatField(null=True, blank=True)
+	telegram_id = models.CharField(max_length = 20, null=True, blank=True)
 	def self_id(self):
 		return self.name + '(' + self.data_source.self_id() + ',' + self.data_variable.self_id() + ':' + self.operand + ',' + str(self.compare_value) + ')'
 	def __unicode__(self):

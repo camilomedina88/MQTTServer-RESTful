@@ -14,6 +14,10 @@ def index(request):
     datasource_list = DataSource.objects.order_by('-name')
     context = {'datasource_list': datasource_list}
     return render(request, 'iot_hub/index.html', context)
+def bootstrap(request):
+    datasource_list = DataSource.objects.order_by('-name')
+    context = {'datasource_list': datasource_list}
+    return render(request, 'iot_hub/bootstrap/pages/index.html',context)
 
 def web_datasource(request, uuid):
     datasource = DataSource.objects.get(source_id = uuid)
