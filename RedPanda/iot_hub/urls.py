@@ -3,6 +3,7 @@ from iot_hub import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^tracking_demo', views.web_trackingdemo),
     url(r'^datasources/(?P<uuid>[^/]+)/$', views.web_datasource),
     url(r'^vars/(?P<uuid>[^/]+)/history$', views.web_variables),
     url(r'^vars/(?P<uuid>[^/]+)/view$', views.web_varWidget),

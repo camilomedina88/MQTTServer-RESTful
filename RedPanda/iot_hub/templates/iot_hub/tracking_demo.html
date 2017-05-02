@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Tracking Demo</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+// This example creates a 2-pixel-wide red polyline showing the path of William
+// Kingsford Smith's first trans-Pacific flight between Oakland, CA, and
+// Brisbane, Australia.
+
+function initMap() {
+  
+  {{gps1|length}}
+  var gps_track_points1 = [
+  {% for varval in gps1 %}
+    {lat: {{varval.lat}}, lng: {{varval.lng}}, timestamp: "{{varval.timestamp}}" },
+  {% endfor %}
+  ];
+
+  {{gps2|length}}
+  var gps_track_points2 = [
+  {% for varval in gps2 %}
+    {lat: {{varval.lat}}, lng: {{varval.lng}}, timestamp: "{{varval.timestamp}}" },
+  {% endfor %}
+  ];
+
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 16,
+    center: {lat: gps_track_points1[0].lat, lng: gps_track_points1[0].lng},
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  });
+
+
+   var gpsPath = new google.maps.Polyline({
+     path: gps_track_points1,
+     geodesic: true,
+     strokeColor: '#FF0000',
+     strokeOpacity: 1.0,
+     strokeWeight: 2
+   });
+
+   var image_begin = 'http://maps.google.com/mapfiles/kml/paddle/go.png';
+   var image_end = 'http://maps.google.com/mapfiles/kml/paddle/stop.png';
+   var marker_init = new google.maps.Marker({
+      position: {
+        lat: gps_track_points1[0].lat,
+        lng: gps_track_points1[0].lng
+      },
+      map: map,
+      icon: image_begin
+    });
+   var marker_end = new google.maps.Marker({
+      position: {
+        lat: gps_track_points1[gps_track_points1.length-1].lat,
+        lng: gps_track_points1[gps_track_points1.length-1].lng
+      },
+      map: map,
+      icon: image_end
+    });
+    attachMessage(marker_init, "Inicio <br />" + gps_track_points1[0].timestamp);
+    attachMessage(marker_end, "Fin <br />" + gps_track_points1[gps_track_points1.length-1].timestamp);
+
+  // Attaches an info window to a marker with the provided message. When the
+      // marker is clicked, the info window will open with the secret message.
+      function attachMessage(marker, Message) 
+      {
+        var infowindow = new google.maps.InfoWindow({
+          content: Message
+        });
+
+        marker.addListener('click', function() {
+          infowindow.open(marker.get('map'), marker);
+        });
+      }
+
+ gpsPath.setMap(map);
+}
+
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVjpScqj7Q9vJRXMzPKMEptZQ7utJATyI&callback=initMap"></script>
+  </body>
+</html>

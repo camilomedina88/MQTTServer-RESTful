@@ -25,7 +25,7 @@ SECRET_KEY = '-w0@8ck=j2uofr$cbh0sm-&k^d@i1le27+$335hn-l)2zhlsr7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["nickiler.ddns.net"]
+ALLOWED_HOSTS = [u'tracking-ceaiot.ml']
 
 
 # Application definition
@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'RedPanda.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'DjangoDB',
-        'USER': 'nickiler',
-        'PASSWORD': 'Nicolas531',
+        'NAME': 'RedPanda',
+        'USER': 'RedPanda',
+        'PASSWORD': 'ceaiot',
         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS':{'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"}

@@ -32,6 +32,38 @@ def web_varWidget(request, uuid):
     context = {'variable': variable}
     return render(request, 'iot_hub/varWidget.html', context)
 
+def web_trackingdemo(request):
+    
+
+    lat1 = Variable.objects.get(var_id= "3415aab6-6d2d-45e3-966a-58d49ab81b40")
+    lng1 = Variable.objects.get(var_id= "5be2a39f-5de7-4d0b-ab19-8b0086f505c0")
+    lat_list1 = VarValue.objects.filter(variable=lat1)
+    lng_list1 = VarValue.objects.filter(variable=lng1)
+
+    lat2 = Variable.objects.get(var_id= "39e22a89-0bdf-4e41-be6d-eff1495c4fe8")
+    lng2 = Variable.objects.get(var_id= "3a02c8e8-1009-464c-922e-f7b1199b9cce")
+    lat_list2 = VarValue.objects.filter(variable=lat2)
+    lng_list2 = VarValue.objects.filter(variable=lng2)
+
+    gps1 = []
+    gps2 = []
+    for value in lat_list1:
+        try:
+            longitude = lng_list1.get(timestamp=value.timestamp).value
+            gps1.append({'timestamp':value.timestamp,'lat':value.value, 'lng':longitude})
+        except:
+            pass
+
+    for value in lat_list2:
+        try:
+            longitude = lng_list2.get(timestamp=value.timestamp).value
+            gps2.append({'timestamp':value.timestamp,'lat':value.value, 'lng':longitude})
+        except:
+            pass
+
+
+    context = {'gps1': gps1, 'gps2': gps2}
+    return render(request, 'iot_hub/tracking_demo.html', context)
 
 class JSONResponse(HttpResponse):
     """

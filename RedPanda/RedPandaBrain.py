@@ -20,7 +20,6 @@ ventiladorout=0
 #def eventos(variableID,valorActual,valorSetpoint,tipoOperacion,targetDataSource,targetVarID):
 def eventos(variableID,valorActual):
 
-
 	if(variableID=="hum"):
 		#Revisar si tiene tipo de operacion Traerla
 		tipoOperacionMenor=1
@@ -113,7 +112,7 @@ def eventosTotales(valorActual,tarjetaDestino,variableDestino,operandos,setpoint
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("/solution/4ce2b51d-e554-4735-917f-19ce54518934")
+    client.subscribe("#")
 
 def on_publish(client, userdata, mid):
     #print("mid: "+str(mid))
@@ -121,50 +120,83 @@ def on_publish(client, userdata, mid):
  
 
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
-    infoGalileo=json.loads(str(msg.payload))
+    print("topic: "+msg.topic+", msg: "+str(msg.payload))
+    msg_json=json.loads(str(msg.payload))
     #Averiguar cual es UUID Origen
-    llegaronLasVariables=infoGalileo.keys()
-
+    msg_keys=msg_json.keys()
+    #infogalileo = json.loads(str(msg.payload))
+    #legaronLasVariables=infoGalileo.keys()
+    print msg_json
+    print msg_keys
+    data_source = DataSource.objects.filter(name=msg.topic)
+    print data_source
+    variables = Variable.objects.filter(data_source = data_source)
     
+    t_raw = str(msg_json['time'])
+    timestamp = t_raw[0:4]+"-"+t_raw[4:6]+"-"+t_raw[6:8]+" "+t_raw[8:10]+":"+t_raw[10:12]+":"+t_raw[12:14]
+    for var in variables:
+    	try:
+    		key_value = msg_json[var.name]
+    		try:
+    			value2save = VarValue(value=key_value, variable=var, timestamp=timestamp)
+    			print value2save.timestamp
+    			value2save.save()
+    		except:
+    			print "value not saved"
+    	except:
+    		print var.name + " not found in json"
 
 
-    for k in llegaronLasVariables:
-    	#Saco el nombre del JSON
-    	nombreJson=k
-    	#Saco todos los elementos
+    #timestamp!
+    #20170330165927.000
+    #needed '2006-10-25 14:30:59'
 
-    	elementosJson=infoGalileo[nombreJson]
-    	print(elementosJson)
-    	#Saco el valor actual
-    	if(k != "indices"):
-    		if(k != "com"):
+    #for k in msg_keys:
+    #	try:
+    #		key_value = msg_json[k]
+    #		value2save = VarValue(value=key_value, variable=Variable.objects.get(var_id=))
+
+    #b=VarValue(value=str(10),variable=Variable.objects.get(var_id = k))
+    #print b
+    #b.save()
+
+
+    # for k in llegaronLasVariables:
+    # 	#Saco el nombre del JSON
+    # 	nombreJson=k
+    # 	#Saco todos los elementos
+
+    # 	elementosJson=infoGalileo[nombreJson]
+    # 	print(elementosJson)
+    # 	#Saco el valor actual
+    # 	if(k != "indices"):
+    # 		if(k != "com"):
     			
-    			valorActual=elementosJson[0]['v']
+    # 			valorActual=elementosJson[0]['v']
     			
-    			PandaEventos=Event.objects.filter(data_variable=nombreJson)
-    			operandos=[]
-    			setpoints=[]
-    			tarjetaDestino=[]
-    			variableDestino=[]
-    			acciones=[]
-    			print(k)
-    			b=VarValue(value=str(valorActual),variable=Variable.objects.get(var_id = k))
-    			print b
-    			b.save()
+    # 			PandaEventos=Event.objects.filter(data_variable=nombreJson)
+    # 			operandos=[]
+    # 			setpoints=[]
+    # 			tarjetaDestino=[]
+    # 			variableDestino=[]
+    # 			acciones=[]
+    # 			print(k)
+    # 			b=VarValue(value=str(valorActual),variable=Variable.objects.get(var_id = k))
+    # 			print b
+    # 			b.save()
 
     	
-    			for event in PandaEventos:
+    # 			for event in PandaEventos:
     		
-    				setpoints.append(event.compare_value)
-    				operandos.append(event.operand)
-    				tarjetaDestino.append(event.set_data_source.source_id)
-    				variableDestino.append(event.set_data_variable.var_id)
-    				acciones.append(event.value_set)
+    # 				setpoints.append(event.compare_value)
+    # 				operandos.append(event.operand)
+    # 				tarjetaDestino.append(event.set_data_source.source_id)
+    # 				variableDestino.append(event.set_data_variable.var_id)
+    # 				acciones.append(event.value_set)
 
-    			if(len(PandaEventos)>0):
-					eventosTotales(valorActual,tarjetaDestino,variableDestino,operandos,setpoints,acciones)
-       	#filtro='data_variable=+nombreJson'
+    # 			if(len(PandaEventos)>0):
+				# 	eventosTotales(valorActual,tarjetaDestino,variableDestino,operandos,setpoints,acciones)
+    #    	#filtro='data_variable=+nombreJson'
     	
 
 client = paho.Client()
